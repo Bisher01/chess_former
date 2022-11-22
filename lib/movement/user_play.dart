@@ -1,13 +1,13 @@
-import 'package:chess_former/structure/map.dart';
-import 'package:chess_former/structure/position.dart';
+import 'package:chess_former/game_structure/map.dart';
+import 'package:chess_former/game_structure/position.dart';
 import 'package:flutter/material.dart';
 
-class Move extends ChangeNotifier {
+class Play extends ChangeNotifier {
   // for animation purposes
   // player position on the screen is 70 pixels from the top
   double top = 70;
   // and 70 pixels from left
-  double left = 70;
+  double left = 190;
   // animation duration
   int duration = 100;
   // creating an instance from our Level class
@@ -17,13 +17,10 @@ class Move extends ChangeNotifier {
   // boolean list of available moves for the ui part
   List<List<bool>> availableMoves =
       List.generate(11, (x) => List.generate(16, (y) => false));
-  // List of Positions for the logical part
-  List<Position> availablePosition = [];
 
   // clear the previous two lists
   void clearAvailableMoves() {
     availableMoves = List.generate(11, (x) => List.generate(16, (y) => false));
-    availablePosition = [];
   }
 
   // get the player position
@@ -38,37 +35,35 @@ class Move extends ChangeNotifier {
     List<List<String>> map = level.level2;
     clearAvailableMoves();
 
-    // check right
+    // check right =>
     for (int i = currentPosition.y+1; i < 16; i++) {
       if (map[currentPosition.x][i] == 'wall') {
         break;
       } else {
         availableMoves[currentPosition.x][i] = true;
-        availablePosition.add(Position(x: currentPosition.x, y: i));
       }
     }
 
-    //check left
+    // check left <=
     for (int i = currentPosition.y-1; i >= 0; i--) {
       if (map[currentPosition.x][i] == 'wall') {
         break;
       } else {
         availableMoves[currentPosition.x][i] = true;
-        availablePosition.add(Position(x: currentPosition.x, y: i));
       }
     }
 
-    // check up
+    // check up ^
     for (int i = currentPosition.x - 1; i >= 0; i--) {
       if (map[i][currentPosition.y] == 'wall') {
         break;
       } else {
         availableMoves[i][currentPosition.y] = true;
-        availablePosition.add(Position(x: i, y: currentPosition.y));
       }
     }
     notifyListeners();
   }
+  
 
   //move player to position(x,y)
   Future<void> movePlayer(Position targetPosition, BuildContext context) async {
@@ -165,36 +160,5 @@ class Move extends ChangeNotifier {
       return false;
     }
   }
-
-  // to compare by values
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Move &&
-          runtimeType == other.runtimeType &&
-          top == other.top &&
-          left == other.left &&
-          duration == other.duration &&
-          playerPosition == other.playerPosition &&
-          availableMoves == other.availableMoves;
-
-  @override
-  int get hashCode =>
-      top.hashCode ^
-      left.hashCode ^
-      duration.hashCode ^
-      playerPosition.hashCode ^
-      availableMoves.hashCode;
-
-  // get next state method
-  List<Level> getNextState() {
-    List<Level> nextState = <Level>[];
-    List<Position> positions = availablePosition;
-    for (Position position in positions) {
-      Level l = Level(playerPosition: level.playerPosition)
-          .copyWith(playerPosition: position);
-      nextState.add(l);
-    }
-    return nextState;
-  }
+  
 }

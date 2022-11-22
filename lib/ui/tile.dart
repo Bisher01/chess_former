@@ -1,4 +1,4 @@
-import 'package:chess_former/structure/position.dart';
+import 'package:chess_former/game_structure/position.dart';
 import 'package:flutter/material.dart';
 // this is just a widget to draw a tile
 class Tile extends StatelessWidget {

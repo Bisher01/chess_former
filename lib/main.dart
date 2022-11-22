@@ -1,4 +1,4 @@
-import 'package:chess_former/structure/move.dart';
+import 'package:chess_former/movement/user_play.dart';
 import 'package:chess_former/ui/board.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,14 +14,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context)=> Move()),
+        ChangeNotifierProvider(
+          create: (context) => Play(),
+        ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Chess Former',
+      child: const MaterialApp(
         home: Board(),
+        title: 'Chess Former by BISHER',
+        debugShowCheckedModeBanner: false,
       ),
     );
   }
 }
-

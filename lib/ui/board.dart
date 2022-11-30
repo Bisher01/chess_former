@@ -123,6 +123,14 @@ class _BoardState extends State<Board> {
                     },
                     child: const Text('UCD'),
                   ),
+                  ElevatedButton(
+                    onPressed: () {
+                      HeroStickyLevel level = HeroStickyLevel(playerPosition: Position(x: 1, y: 1), weight: 1,heroStickValue: 0);
+                      ISA isa = ISA();
+                      isa.aStar(level);
+                    },
+                    child: const Text('A*'),
+                  ),
                 ],
               ),
             ],

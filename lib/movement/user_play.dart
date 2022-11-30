@@ -1,5 +1,6 @@
 import 'package:chess_former/game_structure/map.dart';
 import 'package:chess_former/game_structure/position.dart';
+import 'package:chess_former/movement/intelligent_search_algorithm.dart';
 import 'package:flutter/material.dart';
 
 class Play extends ChangeNotifier {
@@ -18,6 +19,7 @@ class Play extends ChangeNotifier {
   List<List<bool>> availableMoves =
       List.generate(11, (x) => List.generate(16, (y) => false));
 
+  ISA isa = ISA();
   // clear the previous two lists
   void clearAvailableMoves() {
     availableMoves = List.generate(11, (x) => List.generate(16, (y) => false));
@@ -36,7 +38,7 @@ class Play extends ChangeNotifier {
     clearAvailableMoves();
 
     // check right =>
-    for (int i = currentPosition.y+1; i < 16; i++) {
+    for (int i = currentPosition.y + 1; i < 16; i++) {
       if (map[currentPosition.x][i] == 'wall') {
         break;
       } else {
@@ -45,7 +47,7 @@ class Play extends ChangeNotifier {
     }
 
     // check left <=
-    for (int i = currentPosition.y-1; i >= 0; i--) {
+    for (int i = currentPosition.y - 1; i >= 0; i--) {
       if (map[currentPosition.x][i] == 'wall') {
         break;
       } else {
@@ -63,11 +65,11 @@ class Play extends ChangeNotifier {
     }
     notifyListeners();
   }
-  
 
   //move player to position(x,y)
   Future<void> movePlayer(Position targetPosition, BuildContext context) async {
     Position playerPosition = getPlayerPosition();
+    isa.heroStick(playerPosition);
     if (playerPosition.y != targetPosition.y) {
       duration = ((targetPosition.y - playerPosition.y).abs() * 100);
     } else {
@@ -84,7 +86,7 @@ class Play extends ChangeNotifier {
   }
 
   //check if there is a wall under the player or he will fall down
-  void checkGravity(Position playerPosition, BuildContext context) {
+  Position checkGravity(Position playerPosition, BuildContext context) {
     List<List<String>> map = level.level2;
     int finalPos = playerPosition.x;
     for (int i = playerPosition.x; i < 10; i++) {
@@ -133,6 +135,7 @@ class Play extends ChangeNotifier {
       }
     });
     notifyListeners();
+    return Position(x: finalPos, y: playerPosition.y);
   }
 
   // get the position of the goal
@@ -160,5 +163,4 @@ class Play extends ChangeNotifier {
       return false;
     }
   }
-  
 }

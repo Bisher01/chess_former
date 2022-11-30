@@ -3,6 +3,7 @@ import 'package:chess_former/game_structure/position.dart';
 import 'package:chess_former/data_structure/stack.dart';
 import '../data_structure/queue.dart';
 import '../game_structure/map.dart';
+import 'dart:math' as math;
 
 class ISA {
   List<Position> availablePosition = [];
@@ -192,6 +193,81 @@ class ISA {
     }
     print(visited.toString());
     print(visited.length);
+    return visited;
+  }
+
+  int heroStick(Position playerPosition) {
+    Position target = Position(x: 9, y: 9);
+    if (playerPosition.x == target.x) {
+      print((playerPosition.y - target.y).abs());
+      return (playerPosition.y - target.y).abs();
+    } else {
+      Position hole;
+      for (int i = playerPosition.y + 1; i < 16; i++) {
+        if (level.level2[playerPosition.x + 1][i] == 'cell') {
+          hole = Position(x: playerPosition.x, y: i);
+          Position endOfHole = checkGravityAI(hole);
+          if (endOfHole.x > target.x) {
+            print(100);
+            return 100;
+          } else {
+            print((hole.y - playerPosition.y).abs());
+            return (hole.y - playerPosition.y).abs();
+          }
+        }
+      }
+      for (int i = playerPosition.y; i > 0; i--) {
+        if (level.level2[playerPosition.x + 1][i] == 'cell') {
+          hole = Position(x: playerPosition.x, y: i);
+          Position endOfHole = checkGravityAI(hole);
+          if (endOfHole.x > target.x) {
+            print(100);
+            return 100;
+          } else {
+            print((hole.y - playerPosition.y).abs());
+            return (hole.y - playerPosition.y).abs();
+          }
+        }
+      }
+    }
+    print(111);
+    return 100;
+  }
+
+  List<HeroStickyLevel> aStar(HeroStickyLevel initialLevel) {
+    APriorityQueue queue = APriorityQueue();
+    Set<Level> added = <Level>{};
+    List<HeroStickyLevel> visited = <HeroStickyLevel>[];
+
+    queue.enqueue(initialLevel);
+    added.add(Level(playerPosition: initialLevel.playerPosition));
+
+    while (true) {
+      final level = queue.dequeue();
+      if (checkWinAI(level!.playerPosition)) {
+        print('win!');
+        break;
+      }
+      visited.add(level);
+      final neighbors = getNextState(level.playerPosition);
+      for (var neighbor in neighbors) {
+        if (!added.contains(neighbor)) {
+          queue.enqueue(
+            HeroStickyLevel(
+              playerPosition: neighbor.playerPosition,
+              weight: level.weight + 1,
+              heroStickValue: heroStick(neighbor.playerPosition),
+            ),
+          );
+          added.add(neighbor);
+        }
+      }
+    }
+    print(visited.length);
+
+    print(visited.toString());
+    print(visited[visited.length - 1].heroStickValue);
+    print(visited[visited.length - 1].weight);
     return visited;
   }
 }

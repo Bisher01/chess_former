@@ -85,6 +85,40 @@ class ISA {
     return nextState;
   }
 
+  // Method to calculate the heroStick value for each position
+  // It's supposed to be heuristic, but I don't know how to spell it
+  int heroStick(Position playerPosition) {
+    Position target = Position(x: 9, y: 9);
+    if (playerPosition.x == target.x) {
+      return (playerPosition.y - target.y).abs();
+    } else {
+      Position hole;
+      for (int i = playerPosition.y + 1; i < 16; i++) {
+        if (level.level2[playerPosition.x + 1][i] == 'cell') {
+          hole = Position(x: playerPosition.x, y: i);
+          Position endOfHole = checkGravityAI(hole);
+          if (endOfHole.x > target.x) {
+            return 100;
+          } else {
+            return (hole.y - playerPosition.y).abs();
+          }
+        }
+      }
+      for (int i = playerPosition.y; i > 0; i--) {
+        if (level.level2[playerPosition.x + 1][i] == 'cell') {
+          hole = Position(x: playerPosition.x, y: i);
+          Position endOfHole = checkGravityAI(hole);
+          if (endOfHole.x > target.x) {
+            return 100;
+          } else {
+            return (hole.y - playerPosition.y).abs();
+          }
+        }
+      }
+    }
+    return 100;
+  }
+
   List<Level> bfs(Level source) {
     // queue keeps track of the neighboring vertices to visit next.
     final queue = QueueStack<Level>();
@@ -196,44 +230,6 @@ class ISA {
     return visited;
   }
 
-  int heroStick(Position playerPosition) {
-    Position target = Position(x: 9, y: 9);
-    if (playerPosition.x == target.x) {
-      print((playerPosition.y - target.y).abs());
-      return (playerPosition.y - target.y).abs();
-    } else {
-      Position hole;
-      for (int i = playerPosition.y + 1; i < 16; i++) {
-        if (level.level2[playerPosition.x + 1][i] == 'cell') {
-          hole = Position(x: playerPosition.x, y: i);
-          Position endOfHole = checkGravityAI(hole);
-          if (endOfHole.x > target.x) {
-            print(100);
-            return 100;
-          } else {
-            print((hole.y - playerPosition.y).abs());
-            return (hole.y - playerPosition.y).abs();
-          }
-        }
-      }
-      for (int i = playerPosition.y; i > 0; i--) {
-        if (level.level2[playerPosition.x + 1][i] == 'cell') {
-          hole = Position(x: playerPosition.x, y: i);
-          Position endOfHole = checkGravityAI(hole);
-          if (endOfHole.x > target.x) {
-            print(100);
-            return 100;
-          } else {
-            print((hole.y - playerPosition.y).abs());
-            return (hole.y - playerPosition.y).abs();
-          }
-        }
-      }
-    }
-    print(111);
-    return 100;
-  }
-
   List<HeroStickyLevel> aStar(HeroStickyLevel initialLevel) {
     APriorityQueue queue = APriorityQueue();
     Set<Level> added = <Level>{};
@@ -264,10 +260,7 @@ class ISA {
       }
     }
     print(visited.length);
-
     print(visited.toString());
-    print(visited[visited.length - 1].heroStickValue);
-    print(visited[visited.length - 1].weight);
     return visited;
   }
 }

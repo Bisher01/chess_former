@@ -1,4 +1,6 @@
 import 'package:chess_former/game_structure/map.dart';
+
+//sort depending on weight
 class PriorityQueue {
   List<WeightedLevel> queue = <WeightedLevel>[];
   PriorityQueue();
@@ -23,6 +25,7 @@ class PriorityQueue {
   }
 }
 
+//Search, depending on heuristic value and weight
 class APriorityQueue {
   List<HeroStickyLevel> queue = <HeroStickyLevel>[];
   APriorityQueue();
